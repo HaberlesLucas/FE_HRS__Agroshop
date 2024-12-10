@@ -1,5 +1,8 @@
 import './assets/main.css'
 
+//tailwind css 
+
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -8,7 +11,22 @@ import router from './router'
 
 const app = createApp(App)
 
-app.use(createPinia())
-app.use(router)
+const userData = localStorage.getItem('userData');
+let userRole = null;
 
-app.mount('#app')
+if (userData) {
+    try {
+        const parsedUserData = JSON.parse(userData);
+        userRole = parsedUserData.rol_id;
+    } catch (error) {
+        console.error('Error al procesar los datos de usuario:', error);
+        localStorage.removeItem('userData'); 
+    }
+}
+
+app.config.globalProperties.$userRole = userRole;
+
+app.use(createPinia());
+app.use(router);
+
+app.mount('#app');
