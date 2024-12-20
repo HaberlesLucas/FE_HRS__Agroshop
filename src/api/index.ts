@@ -1,4 +1,3 @@
-//index.ts
 const API_URL = import.meta.env.VITE_API_URL;
 
 const getAuthToken = (): string | null => {
@@ -31,9 +30,11 @@ export const fetchPost = async (
     data: any,
     includeAuth: boolean = true
 ) => {
-    const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-    };
+    const headers: Record<string, string> = {};
+
+    if (!(data instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+    }
 
     if (includeAuth && getAuthToken()) {
         headers['Authorization'] = `Bearer ${getAuthToken()}`;
@@ -41,8 +42,8 @@ export const fetchPost = async (
 
     const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
-        headers,
-        body: JSON.stringify(data),
+        headers,  
+        body: data instanceof FormData ? data : JSON.stringify(data),
     });
 
     if (!response.ok) {

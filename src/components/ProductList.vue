@@ -9,7 +9,7 @@ const productStore = useProductStore();
 // desestructurar los valores reactivos del store
 const { products, isCargando, error } = toRefs(productStore);
 
-// función para obtener los productos
+//para obtener los productos
 const fetchProducts = async () => {
   await productStore.fetchProducts();
 };
@@ -32,7 +32,6 @@ const deleteProduct = async (id: number) => {
 
 onMounted(fetchProducts);
 </script>
-
 
 
 <template>
@@ -58,6 +57,7 @@ onMounted(fetchProducts);
               <th class="p-3">Categoría</th>
               <th class="p-3">Stock</th>
               <th class="p-3">Precio Compra</th>
+              <th class="p-3">Imagen</th>
               <th class="p-3">Acciones</th>
             </tr>
           </thead>
@@ -69,6 +69,12 @@ onMounted(fetchProducts);
               <td class="p-3">{{ product.categoria.nombre_categoria }}</td>
               <td class="p-3">{{ product.stock }}</td>
               <td class="p-3">{{ product.precio_compra || 'N/A' }}</td>
+              <td class="p-3">
+                <!--acceder a la primera imagen -->
+                <img v-if="product.imagenes && product.imagenes.length > 0" :src="`${product.imagenes[0].url_imagen}`"
+                  alt="Imagen del producto" class="w-16 h-16 object-cover rounded-md" />
+                <span v-else>No disponible</span>
+              </td>
               <td class="p-3">
                 <div class="flex space-x-2">
                   <button @click="editProduct(product)" class="text-blue-500 hover:text-blue-700">

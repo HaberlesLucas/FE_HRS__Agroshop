@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useCarritoStore } from '@/stores/carritoStore'; 
 
 export const useUserStore = defineStore('user', {
     state: () => ({
@@ -10,6 +11,13 @@ export const useUserStore = defineStore('user', {
         },
         clearUser() {
             this.user = null;
+        },
+        logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
+            this.clearUser();
+            const carritoStore = useCarritoStore(); 
+            carritoStore.vaciarCarrito();  
         },
     },
 });

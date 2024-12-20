@@ -5,7 +5,6 @@ import PanelProductos from '../views/PanelProductos.vue';
 import ClientePanel from '../views/ClientePanel.vue';
 import ProductListView from '../views/ProductListView.vue';
 
-
 const routes = [
   { path: '/', name: 'login', component: LoginView },
   { path: '/registro', name: 'registro', component: RegistroView },

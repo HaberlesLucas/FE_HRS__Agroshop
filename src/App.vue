@@ -6,19 +6,26 @@ const userStore = useUserStore();
 const userData = localStorage.getItem('userData');
 
 if (userData) {
-  userStore.setUser(JSON.parse(userData));  
+  userStore.setUser(JSON.parse(userData));
 }
 </script>
 
 <template>
   <div id="app">
     <Navbar />
-    <router-view />
+    <div class="content-wrapper">
+      <router-view />
+    </div>
   </div>
 </template>
 
 <style>
 body {
-  padding-top: 56px;
+  margin: 0;
+  padding: 0;
+}
+
+.content-wrapper {
+  padding-top: 64px;
 }
 </style>

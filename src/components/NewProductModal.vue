@@ -6,6 +6,7 @@ import { getCategorias } from '@/api/categorias';
 import { watch } from 'vue'; //escuchar
 
 import { ChevronDown } from 'lucide-vue-next';
+import { fetchPost } from '@/api';
 
 
 interface Category {
@@ -23,6 +24,9 @@ interface NewProduct {
     incremento?: number;
     id_categoria: number;
 }
+
+const previewImage = ref<string | null>(null);
+const selectedFile = ref<File | null>(null);
 
 const props = defineProps<{
     isOpen: boolean;
@@ -43,14 +47,32 @@ const newProduct = ref<NewProduct>({
     id_categoria: 0,
 });
 
-const saveProduct = () => {
-    if (props.product) {
-        emit('save', { ...props.product, ...newProduct.value });  
-    } else {
-        emit('save', newProduct.value);  
+const saveProduct = async () => {
+    const formData = new FormData();
+
+    ///recorrer el objeto newProduct y agregar cada propiedad al FormData
+    Object.entries(newProduct.value).forEach(([key, value]) => {
+        formData.append(key, value as string);
+
+    });
+
+    ////exite imagen?
+    if (selectedFile.value) {
+        formData.append('imagen', selectedFile.value);
     }
-    resetForm();
+    console.log('Contenido de FormData:', Array.from(formData.entries()));
+
+    try {
+        const productoCreado = await fetchPost('productos', formData, true);
+        console.log('Producto creado:', productoCreado);
+    } catch (error) {
+        console.error('Error al guardar el producto:', error);
+    }
 };
+
+
+
+
 
 
 const resetForm = () => {
@@ -70,12 +92,12 @@ watch(
     () => props.product,
     (product) => {
         if (product) {
-            newProduct.value = { ...product }; 
+            newProduct.value = { ...product };
         } else {
-            resetForm(); 
+            resetForm();
         }
     },
-    { immediate: true } 
+    { immediate: true }
 );
 
 
@@ -87,6 +109,17 @@ onMounted(async () => {
         console.error('Error al cargar categorías:', error);
     }
 });
+
+///imagen
+const handleFileChange = (event: Event) => {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+        selectedFile.value = input.files[0];
+        previewImage.value = URL.createObjectURL(selectedFile.value);
+    }
+};
+
+
 </script>
 
 <template>
@@ -152,6 +185,14 @@ onMounted(async () => {
                                 class="absolute inset-y-0 right-0 top-1/2 transform -translate-y-1/2 text-gray-500" />
                         </div>
                     </div>
+                    <div>
+                        <label for="imagen" class="block text-sm font-medium text-gray-700">Imagen</label>
+                        <input type="file" id="imagen" @change="handleFileChange" accept="image/*"
+                            class="mt-1 block w-full bg-gray-200 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+                        <img v-if="previewImage" :src="previewImage" alt="Previsualización"
+                            class="mt-2 max-w-full h-auto rounded-md" />
+                    </div>
+
                 </div>
                 <div class="mt-6 flex justify-end space-x-3">
                     <button type="button" @click="emit('close')"

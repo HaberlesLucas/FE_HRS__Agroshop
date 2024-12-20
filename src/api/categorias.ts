@@ -9,4 +9,4 @@ interface Categoria {
 
 export const getCategorias = async (): Promise<{ data: Categoria[] }> => {
     return await fetchGet('productos/categorias');
-};
+}; 

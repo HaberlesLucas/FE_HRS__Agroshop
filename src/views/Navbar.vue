@@ -100,10 +100,12 @@ const toggleNavbar = () => {
 };
 
 const handleLogout = () => {
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('userData');
-  userStore.clearUser();
-  router.push('/');
+  try {
+    userStore.logout();  
+    router.push('/'); 
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+  }
 };
 
 //dependiendo del rol del usuario se redirecciona a diferente ruta

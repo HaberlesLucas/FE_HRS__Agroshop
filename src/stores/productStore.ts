@@ -43,6 +43,7 @@ export const useProductStore = defineStore('product', {
             incremento: product.incremento || 0,
             created_at: product.created_at || null,
             updated_at: product.updated_at || null,
+            imagen: product.imagen || null,
           }));
         } else {
           throw new Error('La respuesta de la API no es un array');
@@ -68,7 +69,7 @@ export const useProductStore = defineStore('product', {
         this.isCargando = false;
       }
     },
-    
+
     addProduct(product: Product) { this.products.push(product); }
   },
 });
